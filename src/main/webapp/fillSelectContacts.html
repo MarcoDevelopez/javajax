@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>JavAjax</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet"/>
+	<link href="css/custom.css" rel="stylesheet"/>
+</head>
+<body>
+	<div class="container">
+		<h1>Fill Selects with Contacts by Marqo404</h1>
+		<hr/>
+		<form class="form-inline">
+	    <select id="contactSelect" class="form-control">
+	    	<option value="">-Seleccionar-</option>
+			</select>
+			<label id="email"></label>
+		</form>
+	</div>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		
+		$(document).ready(function() {
+			var contacts = null;
+			
+			$.ajax({
+				type		: 'GET',
+				url			: 'ContactController',
+				data		: {action:'getList'},
+				async		: true,
+				cache		: false,
+				success	: function(response) {
+					contacts = response;
+					$.each(response, function(index, contact) {
+						$('#contactSelect').append($('<option>', {value:contact.id,text:contact.firstName+' '+contact.lastName}));
+					});
+				}
+			});
+			
+			$('#contactSelect').change(function() {
+				$.each(contacts, function(index, contact) {
+					if (contact.id == $('#contactSelect').val()) {
+						$('#email').html(contact.email);
+						return false;
+					} else {
+						$('#email').html('');
+					}
+				});
+			});
+			
+		});
+	</script>
+</body>
+</html>

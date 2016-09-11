@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>JavAjax</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet"/>
+	<link href="css/custom.css" rel="stylesheet"/>
+</head>
+<body>
+	<div class="container">
+		<h1>Fill Selects with Contacts by Marqo404</h1>
+		<hr/>
+		<form class="form-inline">
+	    <select id="groupSelect" class="form-control">
+	    	<option value="">-Seleccionar-</option>
+			</select>
+			<br/><br/>
+			<table id="contactsTable" class="table table-bordered table-hover">
+				<thead>
+				  <tr>
+				    <th>ID</th>
+				    <th>First Name</th>
+				    <th>Last Name</th>
+				    <th>Birth Date</th>
+				    <th>Email</th>
+				    <th>Active</th>
+				  </tr>
+			  </thead>
+			  <tbody id="contactsTableBody">
+			  	<tr><td colspan="6">No data found.</td></tr>
+			  </tbody>
+			</table>
+		</form>
+	</div>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		
+		$(document).ready(function() {
+			$.ajax({
+				type		: 'get',
+				url			: 'GroupController',
+				data		: {action:'getList'},
+				async		: true,
+				cache		: false,
+				success	: function(response) {
+					$.each(response, function(index, g) {
+						$('#groupSelect').append($('<option>', {value:g.id,text:g.name}));
+					});
+				}
+			});
+		});
+		
+		$('#groupSelect').change(function() {
+			var id = $('#groupSelect').val();
+			if (id.length > 0) {
+				$.ajax({
+					type		: 'GET',
+					url			: 'ContactController',
+					data		: {action:'getListByGroupId',groupId:id},
+					async		: true,
+					cache		: false,
+					success	: function(response) {
+						var total = Object.keys(response).length;
+						$('#contactsTableBody').empty();
+						if (total > 0) {
+							$.each(response, function(index, contact) {
+								$('#contactsTableBody').append(
+										$('<tr>').append(
+											'<td>'+contact.id+'</td>'+
+											'<td>'+contact.firstName+'</td>'+
+											'<td>'+contact.lastName+'</td>'+
+											'<td>'+toDatePattern(contact.birthDate)+'</td>'+
+											'<td>'+contact.email+'</td>'+
+											'<td><span class="glyphicon '+(contact.active==true?'glyphicon-ok':'glyphicon-remove')+'" /></td>'
+										)
+									)
+							});
+						} else {
+							$('#contactsTableBody').append($('<tr><td colspan="6">No data found.</td></tr>'));
+						}
+					}
+				});
+			} else {
+				$('#contactsTableBody').empty();
+				$('#contactsTableBody').append($('<tr><td colspan="6">No data found.</td></tr>'));
+			}
+			
+		});
+		
+		function toDatePattern(dateObject) {
+		    var d = new Date(dateObject);
+		    var day = d.getDate();
+		    var month = d.getMonth() + 1;
+		    var year = d.getFullYear();
+		    if (day < 10) {
+		    	day = "0" + day;
+		    }
+		    if (month < 10) {
+		        month = "0" + month;
+		    }
+		    var date = day + "/" + month + "/" + year;
+		    return date;
+		};
+	</script>
+</body>
+</html>

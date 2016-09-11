@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>JavAjax</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet"/>
+	<link href="css/custom.css" rel="stylesheet"/>
+</head>
+<body>
+	<div class="container">
+		<h1>Fill Two Selects by Marqo404</h1>
+		<hr/>
+		<form class="form-inline">
+	    <select id="groupSelect" class="form-control">
+	    	<option value="">-Seleccionar-</option>
+			</select>
+			<select id="contactSelect" class="form-control">
+	    	<option value="">-Seleccionar-</option>
+			</select>
+		</form>
+	</div>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$.ajax({
+				type		: 'GET',
+				url			: 'GroupController',
+				data		: {action:'getList'},
+				async		: true,
+				cache		: false,
+				success	: function(response) {
+					$.each(response, function(index, group) {
+						$('#groupSelect').append($('<option>', {value:group.id,text:group.name}));
+					});
+				}
+			});
+		});
+		
+		$('#groupSelect').change(function() {
+			var id = $('#groupSelect').val();
+			if (id.length > 0) {
+				$.ajax({
+					type		: 'GET',
+					url			: 'ContactController',
+					data		: {action:'getListByGroupId',groupId:id},
+					async		: true,
+					cache		: false,
+					success	: function(response) {
+						$('#contactSelect').empty();
+						$('#contactSelect').append($('<option>-Seleccionar-</option>'));
+						$.each(response, function(index, contact) {
+							$('#contactSelect').append($('<option>', {value:contact.id,text:contact.firstName+' '+contact.lastName}));
+						});
+					},
+					error		:function (jqXHR, textStatus, errorThrown) {
+	          alert("Contact " + textStatus + " " + errorThrown + " !");
+	      	}
+				});
+			} else {
+				$('#contactSelect').empty();
+				$('#contactSelect').append($('<option>-Seleccionar-</option>'));
+			}
+		});
+	</script>
+</body>
+</html>

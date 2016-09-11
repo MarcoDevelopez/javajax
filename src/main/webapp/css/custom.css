@@ -1,0 +1,22 @@
+/* latin */
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Droid Sans'), local('DroidSans'), url('../fonts/DroidSans.woff2') format('woff2');
+}
+/* latin */
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Droid Sans Bold'), local('DroidSans-Bold'), url('../fonts/DroidSans-Bold.woff2') format('woff2');
+}
+
+html, body {
+	font-family: "Droid Sans", Arial, Helvetica, sans-serif;
+	font-size: 13px;
+}
+.btn {
+	font-size: 13px;
+}
